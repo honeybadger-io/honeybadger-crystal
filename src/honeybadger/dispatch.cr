@@ -2,6 +2,8 @@ require "log"
 
 module Honeybadger
   class Dispatch
+    Log = ::Log.for("honeybadger")
+
     def initialize(@api_key : String, @factory : Honeybadger::Payload.class)
     end
 
@@ -12,9 +14,10 @@ module Honeybadger
     end
 
     def send(exception : Exception, context : HTTP::Server::Context)
-      puts "Honeybadger Caught #{exception}"
-      send(@factory.new exception, context)
-      puts "Honeybadger finished sending it for archival"
+      Log.info { "Caught #{exception}" }
+      payload = @factory.new exception, context
+      send payload
+      Log.info { "finished sending it for archival" }
     end
 
     def async_send(exception : Exception, context : HTTP::Server::Context)
