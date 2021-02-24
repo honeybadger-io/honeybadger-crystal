@@ -19,7 +19,7 @@ module Honeybadger
     end
 
     def send
-      request "v1/notices", payload.to_json
+      Response.new request("v1/notices", payload.to_json)
     end
 
     private def request(path : String, message_body : String)
