@@ -4,11 +4,11 @@ module Honeybadger
   class Dispatch
     Log = ::Log.for("honeybadger")
 
-    def initialize(@api_key : String, @factory : Honeybadger::Payload.class, @enabled : Bool)
+    def initialize(@factory : Honeybadger::Payload.class, @enabled : Bool)
     end
 
     def send(payload : Honeybadger::Payload)
-      api = Api.new(@api_key, payload)
+      api = Api.new(payload)
       api.send
     end
 

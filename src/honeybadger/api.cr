@@ -4,10 +4,7 @@ module Honeybadger
 
     private getter payload, api_key
 
-    def initialize(
-      @api_key : String,
-      @payload : Payload
-    )
+    def initialize(@payload : Payload)
     end
 
     def request_headers

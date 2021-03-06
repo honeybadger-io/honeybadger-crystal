@@ -18,8 +18,9 @@ Add the Honeybadger::Handler to the HTTP::Server stack:
 honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
 honeybadger_enabled = MyServer.production?
 
+Honeybadger.configure(api_key: honeybadger_api_key)
+
 Honeybadger::Handler.new(
-  api_key: honeybadger_api_key,
   enabled: honeybadger_enabled,
   factory: Honeybadger::Payload
 )

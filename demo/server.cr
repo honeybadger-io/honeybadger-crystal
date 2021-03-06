@@ -29,11 +29,12 @@ end
 honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
 honeybadger_enabled = true
 
+Honeybadger.configure(api_key: honeybadger_api_key)
+
 server = HTTP::Server.new([
   HTTP::LogHandler.new(Log.for("http.server")),
   HTTP::ErrorHandler.new,
   Honeybadger::Handler.new(
-    api_key: honeybadger_api_key,
     enabled: honeybadger_enabled,
     factory: Honeybadger::Payload
   ),

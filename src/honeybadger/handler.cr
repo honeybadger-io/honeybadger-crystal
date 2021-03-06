@@ -4,8 +4,8 @@ module Honeybadger
   class Handler
     include HTTP::Handler
 
-    def initialize(*, factory : Honeybadger::Payload.class, api_key : String, enabled = true)
-      @dispatch = Honeybadger::Dispatch.new api_key, factory, enabled
+    def initialize(*, factory : Honeybadger::Payload.class, enabled = true)
+      @dispatch = Honeybadger::Dispatch.new factory, enabled
     end
 
     def call(context)
