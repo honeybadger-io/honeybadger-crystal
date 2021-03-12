@@ -21,7 +21,7 @@ module Honeybadger
       builder.object do
         builder.field "notifier" do
           builder.object do
-            notifier_json
+            notifier_json builder
           end
         end
 

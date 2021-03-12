@@ -1,1 +1,1 @@
-puts "123456"
+puts `git rev-parse HEAD`[0...8]
