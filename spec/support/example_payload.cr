@@ -1,6 +1,6 @@
 module Honeybadger
   class ExamplePayload < Payload
-    def initialize()
+    def initialize(@exception : Exception)
     end
   end
 end

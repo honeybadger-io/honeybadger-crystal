@@ -36,5 +36,14 @@ describe Honeybadger::HttpPayload do
       Honeybadger::HttpPayload::GIT_REVISION.should_not be ""
     end
   end
+
+  describe "to_json" do
+    it "embeds the request path" do
+      expected_request_path = "/honeybadger/crystal"
+
+      context = MockHttp.with_request(resource: expected_request_path)
+      payload = Honeybadger::HttpPayload.new(Exception.new, context)
+      JSON.parse(payload.to_json)["request"]["url"].as_s.should eq expected_request_path
+    end
   end
 end

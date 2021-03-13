@@ -4,7 +4,7 @@ require "../src/honeybadger"
 require "./support/example_payload"
 
 def example_payload
-  Honeybadger::ExamplePayload.new
+  Honeybadger::ExamplePayload.new Exception.new
 end
 
 def test_api_key
