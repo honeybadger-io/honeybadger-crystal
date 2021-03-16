@@ -29,6 +29,13 @@ class MockHttp
     build_request(method: method, resource: resource, headers: headers, body: body)
   end
 
+  def self.build_json_request(*, method = "GET", resource = "/", headers = HTTP::Headers.new, params = {} of String => String)
+    body = params.to_json
+
+    headers["Content-Type"] = "application/json"
+    build_request(method: method, resource: resource, headers: headers, body: body)
+  end
+
   def self.build_request(*, method = "GET", resource = "/", headers = HTTP::Headers.new, body = nil)
     body = "" if body.nil?
 
@@ -90,6 +97,20 @@ describe Honeybadger::HttpPayload do
       params = {parameter1: "value1", parameter2: "value2"}
       context = MockHttp.new.context(
         request: MockHttp.build_multipart_request params: params
+      )
+
+      payload = Honeybadger::HttpPayload.new Exception.new, context
+      results = JSON.parse(payload.to_json)
+
+      params.each do |key, value|
+        results["request"]["params"].as_h[key.to_s]?.should eq value
+      end
+    end
+
+    it "embeds json form params" do
+      params = {parameter1: "value1", parameter2: "value2"}
+      context = MockHttp.new.context(
+        request: MockHttp.build_json_request params: params
       )
 
       payload = Honeybadger::HttpPayload.new Exception.new, context

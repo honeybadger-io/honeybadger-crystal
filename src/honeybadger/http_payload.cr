@@ -33,7 +33,7 @@ module Honeybadger
       when multipart_request?
         multipart_params
       when json_request?
-        raise "todo"
+        json_params
       else
         form_params
       end.each do |key, value|
@@ -42,18 +42,10 @@ module Honeybadger
     end
 
     private def form_params : Hash(String, String)
-      case body = request.body
-      when Nil
-        {} of String => String
-      when IO
-        HTTP::Params.parse(body.gets_to_end).to_h
-      else
-        Log.error { "Failed to parse http request parameters" }
-        {} of String => String
-      end
+      HTTP::Params.parse(request_body).to_h
     end
 
-    private def multipart_params
+    private def multipart_params : Hash(String, String)
       params = {} of String => String
 
       HTTP::FormData.parse(context.request) do |part|
@@ -61,6 +53,18 @@ module Honeybadger
       end
 
       params
+    end
+
+    private def request_body : String
+      if body = request.body
+        body.gets_to_end
+      else
+        ""
+      end
+    end
+
+    private def json_params
+      JSON.parse(request_body).as_h
     end
 
     private def content_type
