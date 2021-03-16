@@ -2,6 +2,7 @@ require "spec"
 require "../src/honeybadger"
 
 require "./support/example_payload"
+require "./support/mock_http"
 
 def example_payload
   Honeybadger::ExamplePayload.new Exception.new
