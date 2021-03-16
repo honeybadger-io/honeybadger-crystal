@@ -39,11 +39,15 @@ class MockHttp
     HTTP::Request.new method, resource, headers, body
   end
 
-  def self.build_response
-    HTTP::Server::Response.new IO::Memory.new, "HTTP/1.1"
+  def self.client_response(status_code : HTTP::Status = HTTP::Status::OK, body : String? = nil)
+    HTTP::Client::Response.new(status_code, body)
   end
 
-  def context(*, request = self.class.build_request, response = self.class.build_response)
+  def self.server_response
+    HTTP::Server::Response.new(IO::Memory.new, "HTTP/1.1")
+  end
+
+  def context(*, request = self.class.build_request, response = self.class.server_response)
     HTTP::Server::Context.new request, response
   end
 
@@ -51,4 +55,3 @@ class MockHttp
     new.context request: build_request(**args)
   end
 end
-

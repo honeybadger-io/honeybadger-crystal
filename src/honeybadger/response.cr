@@ -3,10 +3,11 @@ module Honeybadger
     @success : Bool
 
     def initialize(@response : HTTP::Client::Response)
-      @success = [200..299].includes? @response.status_code
+      @success = (200..299).includes? @response.status_code
     end
 
     def success? : Bool
+      @success
     end
 
     def parsed_id : String?
