@@ -5,6 +5,8 @@ require "./payload"
 
 module Honeybadger
   class HttpPayload < Payload
+    Log = ::Log.for("honeybadger")
+
     getter exception, request, context
 
     @request : HTTP::Request
@@ -18,18 +20,61 @@ module Honeybadger
     end
 
     private def encode_request(builder)
-      builder.field "component", "component"
-      builder.field "action", "action"
       builder.field "url", request.path
       builder.field "params" do
         builder.object do
-          request_params(builder)
+          request_params builder
         end
       end
     end
 
     private def request_params(builder)
-      builder.field "method", "post"
+      case
+      when multipart_request?
+        multipart_params
+      when json_request?
+        raise "todo"
+      else
+        form_params
+      end.each do |key, value|
+        builder.field key, value
+      end
+    end
+
+    private def form_params : Hash(String, String)
+      case body = request.body
+      when Nil
+        {} of String => String
+      when IO
+        HTTP::Params.parse(body.gets_to_end).to_h
+      else
+        Log.error { "Failed to parse http request parameters" }
+        {} of String => String
+      end
+    end
+
+    private def multipart_params
+      params = {} of String => String
+
+      HTTP::FormData.parse(context.request) do |part|
+        params[part.name] = part.body.gets_to_end
+      end
+
+      params
+    end
+
+    private def content_type
+      request.headers["content-type"]?
+    end
+
+    private def json_request? : Bool
+      return false unless header = content_type
+      header.matches? %r|application/json|
+    end
+
+    private def multipart_request? : Bool
+      return false unless header = content_type
+      header.matches? %r|^multipart/form-data|
     end
   end
 end
