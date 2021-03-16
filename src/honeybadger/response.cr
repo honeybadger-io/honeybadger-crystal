@@ -13,6 +13,8 @@ module Honeybadger
     def parsed_id : String?
       decoded = Hash(String, String).from_json body
       decoded["id"]?
+    rescue JSON::ParseException
+      nil
     end
 
     delegate body, status, status_code, to: @response
