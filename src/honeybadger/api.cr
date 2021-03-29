@@ -1,10 +1,9 @@
 module Honeybadger
+  # An API wrapper for the Honeybadger HTTP API
   class Api
     BASE_URL = Path["https://api.honeybadger.io"]
 
-    private getter payload, api_key
-
-    def initialize(@payload : Payload)
+    def initialize
     end
 
     def request_headers
@@ -15,7 +14,7 @@ module Honeybadger
       }
     end
 
-    def send
+    def send(payload)
       Response.new request("v1/notices", payload.to_json)
     end
 

@@ -3,6 +3,7 @@ module Honeybadger
     def initialize(@exception : Exception = self.class.generate_exception)
     end
 
+    # Generates an exception with a backtrace for testing.
     def self.generate_exception
       raise "mock exception with backtrace"
     rescue e

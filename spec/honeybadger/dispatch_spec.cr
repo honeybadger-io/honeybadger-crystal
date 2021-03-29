@@ -2,7 +2,7 @@ require "../spec_helper"
 require "log/spec"
 
 private def dispatch
-  Honeybadger::Dispatch.new(Honeybadger::ExamplePayload, true)
+  Honeybadger::Dispatch.new(Honeybadger::ExamplePayload.new)
 end
 
 private def dispatch_message_for_status(status)

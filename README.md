@@ -28,8 +28,8 @@ Honeybadger::Handler.new(
 
 Details for adding the handler to:
 
-- [lucky framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
-- [Amber framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
+- [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
+- [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
 
 ## Version Requirements
 

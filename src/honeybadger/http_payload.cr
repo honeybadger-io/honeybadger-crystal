@@ -59,7 +59,7 @@ module Honeybadger
       if body = request.body
         body.gets_to_end
       else
-        ""
+        "{}"
       end
     end
 

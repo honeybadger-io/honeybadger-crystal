@@ -8,7 +8,7 @@ end
 describe Honeybadger::Payload do
   describe "notifier" do
     it "has the name of the crystal shard" do
-      rendered_and_parsed_payload["notifier"]["name"].as_s?.should eq "Honeybadger Crystal"
+      rendered_and_parsed_payload["notifier"]["name"].as_s?.should eq "honeybadger-crystal"
     end
 
     it "has the repository of the crystal shard" do

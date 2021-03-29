@@ -27,17 +27,13 @@ router.on("/raise") do
 end
 
 honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
-honeybadger_enabled = true
 
 Honeybadger.configure(api_key: honeybadger_api_key)
 
 server = HTTP::Server.new([
   HTTP::LogHandler.new(Log.for("http.server")),
   HTTP::ErrorHandler.new,
-  Honeybadger::Handler.new(
-    enabled: honeybadger_enabled,
-    factory: Honeybadger::Payload
-  ),
+  Honeybadger::Handler.new,
   router
 ]) do |context|
   context.response.content_type = "text/html"

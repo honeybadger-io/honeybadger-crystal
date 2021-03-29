@@ -25,7 +25,7 @@ module Honeybadger
     private def notifier_json(builder)
       builder.field "notifier" do
         builder.object do
-          builder.field "name", "Honeybadger Crystal"
+          builder.field "name", "honeybadger-crystal"
           builder.field "url", "https://github.com/honeybadger-io/honeybadger-crystal"
           builder.field "version", Honeybadger::VERSION
         end

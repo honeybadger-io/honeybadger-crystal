@@ -4,29 +4,23 @@ module Honeybadger
   class Dispatch
     Log = ::Log.for("honeybadger")
 
-    def initialize(@factory : Honeybadger::Payload.class, @enabled : Bool)
-    end
-
-    def send(payload : Honeybadger::Payload)
-      api = Api.new(payload)
-      api.send
-    end
-
-    def send(exception : Exception, context : HTTP::Server::Context) : Nil
-      return message_for(:disabled) unless enabled?
-
-      payload = @factory.new exception, context
-      message_for send(payload)
-    end
-
-    def async_send(exception : Exception, context : HTTP::Server::Context)
+    def self.send_async(payload : Payload) : Nil
       spawn do
-        send exception, context
+        new(payload).send
       end
     end
 
-    def enabled?
-      @enabled
+    def self.send(payload : Payload) : Nil
+      new(payload).send
+    end
+
+    def initialize(@payload : Honeybadger::Payload)
+    end
+
+    def send : Nil
+      return message_for(:disabled) unless Honeybadger.report_data?
+
+      message_for Api.new.send(@payload)
     end
 
     def message_for(response : Response)

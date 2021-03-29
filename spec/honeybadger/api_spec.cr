@@ -2,7 +2,7 @@ require "../spec_helper"
 
 describe Honeybadger::Api do
   it "implements correct request headers" do
-    headers = Honeybadger::Api.new(example_payload).request_headers
+    headers = Honeybadger::Api.new.request_headers
     headers["Content-Type"].should eq "application/json"
     headers["X-API-Key"].should eq test_api_key
 
