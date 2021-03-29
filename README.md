@@ -39,8 +39,6 @@ Crystal > 0.36.1
 
 The packaged demo app creates a minimal http server which responds to `/raise` by generating an exception.
 
-To run the demo app:
+To run the demo app, raise an exception, and send it to the honeybadger API:
 
-- set HONEYBADGER_API_KEY in your environment
-- `crystal run demo/server.cr --error-trace`
-- `curl -i http://localhost:8080/raise`
+- `HONEYBADGER_API_KEY=nnnnnnnn script/demo`
