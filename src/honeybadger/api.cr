@@ -3,9 +3,11 @@ module Honeybadger
   class Api
     BASE_URL = Path["https://api.honeybadger.io"]
 
+    # :nodoc:
     def initialize
     end
 
+    # :nodoc:
     def request_headers
       HTTP::Headers{
         "Content-Type" => "application/json",
@@ -14,10 +16,12 @@ module Honeybadger
       }
     end
 
+    # Renders a `Payload` and sends it to the exception reporting api endpoint.
     def send(payload)
       Response.new request("v1/notices", payload.to_json)
     end
 
+    # :nodoc:
     private def request(path : String, message_body : String)
       endpoint = BASE_URL.join path
       HTTP::Client.post endpoint.to_s, request_headers, body: message_body

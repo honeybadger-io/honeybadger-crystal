@@ -1,4 +1,5 @@
 module Honeybadger
+  # A response from the Honeybadger API
   class Response
     @success : Bool
 
@@ -10,6 +11,7 @@ module Honeybadger
       @success
     end
 
+    # Retrieves the Honeybadger event ID from the response payload.
     def parsed_id : String?
       decoded = Hash(String, String).from_json body
       decoded["id"]?

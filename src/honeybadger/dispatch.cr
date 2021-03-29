@@ -1,28 +1,37 @@
 require "log"
 
 module Honeybadger
+  # Dispatch is responsible for:
+  # - Sending payloads to the API, optionally asynchronously
+  # - Parsing response codes
+  # - Emitting developer friendly status messages
   class Dispatch
     Log = ::Log.for("honeybadger")
 
+    # Sends a payload in a non-blocking way.
     def self.send_async(payload : Payload) : Nil
       spawn do
         new(payload).send
       end
     end
 
+    # Sends a payload to the reporting api.
     def self.send(payload : Payload) : Nil
       new(payload).send
     end
 
+    # :nodoc:
     def initialize(@payload : Honeybadger::Payload)
     end
 
+    # :nodoc:
     def send : Nil
       return message_for(:disabled) unless Honeybadger.report_data?
 
       message_for Api.new.send(@payload)
     end
 
+    # Logs a human friendly response message for standard api response codes.
     def message_for(response : Response)
       Log.info do
         case response.status
@@ -44,6 +53,7 @@ module Honeybadger
       end
     end
 
+    # :ditto:
     def message_for(key : Symbol)
       Log.info do
         case key

@@ -1,18 +1,35 @@
 module Honeybadger
-  abstract class Payload
+  # A Payload is a json renderable object which conforms to the honeybadger
+  # json schema for [exceptions](https://docs.honeybadger.io/api/exceptions.html)
+  #
+  # This payload provides a baseline for general use and is intended
+  # to be extended by framework or application specific uses to fill in details.
+  class Payload
+    # The path to source code at compile time.
     COMPILE_DIR  = {{ run("../run_macros/pwd.cr").stringify }}.strip
+
+    # The git revision at compile time.
     GIT_REVISION = {{ run("../run_macros/git_revision.cr").stringify }}.strip
+
+    # The system or container hostname.
     HOSTNAME     = System.hostname
 
+    # The exception to be rendered.
     getter exception : Exception
 
+    # Subclasses of Payload must set @exception, but will likely need to
+    # take additional parameters for context.
     def initialize(@exception : Exception)
     end
 
+    # Stub implemented to ease the common paradigm of embedding request
+    # details into the payload.
     def request_json(builder); end
 
+    # Stub implemented to provide the environment name, e.g. "production"
     def environment_name; end
 
+    # Renders the complete json payload.
     def to_json(builder : JSON::Builder)
       builder.object do
         notifier_json builder
@@ -22,6 +39,7 @@ module Honeybadger
       end
     end
 
+    # Renders the metadata "notifier" stanza of the json payload.
     private def notifier_json(builder)
       builder.field "notifier" do
         builder.object do
@@ -32,6 +50,7 @@ module Honeybadger
       end
     end
 
+    # Renders the exception into the json "error" stanza.
     private def error_json(builder)
       builder.field "error" do
         builder.object do
@@ -42,6 +61,7 @@ module Honeybadger
       end
     end
 
+    # Renders the exception backtrace into the "error" stanza.
     private def backtrace_json(builder)
       if exception.backtrace?
         builder.field "backtrace" do
@@ -64,6 +84,7 @@ module Honeybadger
       '(?<method>[^']+)'      # method name
     $/x
 
+    # Parses and renders a single stack frame for the "error" stanza.
     private def encode_trace_frame(builder : JSON::Builder, frame : String)
       if matches = STACK_FRAME.match(frame)
         builder.field "file", matches["path"]
@@ -76,6 +97,7 @@ module Honeybadger
       end
     end
 
+    # Renders the "server" metadata stanza.
     private def server_json(builder)
       builder.field "server" do
         builder.object do

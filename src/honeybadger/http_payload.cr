@@ -4,18 +4,25 @@ require "http"
 require "./payload"
 
 module Honeybadger
+  # An HttpPayload renders request metadata in addition to the Exception data
+  # provided by `Payload`, and should be used for errors which happen during an
+  # HTTP::Server request cycle.
   class HttpPayload < Payload
-    Log = ::Log.for("honeybadger")
+    # :inherit:
+    getter exception
 
-    getter exception, request, context
+    # The request in which the exception was triggered.
+    getter request : HTTP::Request
 
-    @request : HTTP::Request
+    # :nodoc:
+    getter context
 
     def initialize(@exception : Exception, @context : HTTP::Server::Context)
       @request = @context.request
     end
 
-    private def request_json(builder)
+    # Renders the "request" stanza of the json payload.
+    def request_json(builder)
       builder.field "request" do
         builder.object do
           builder.field "url", request.path
@@ -28,6 +35,7 @@ module Honeybadger
       end
     end
 
+    # Renders request parameters by dispatching based on request type.
     private def request_params(builder)
       case
       when multipart_request?
@@ -41,10 +49,12 @@ module Honeybadger
       end
     end
 
+    # Renders request parameters sent via http form encoding
     private def form_params : Hash(String, String)
       HTTP::Params.parse(request_body).to_h
     end
 
+    # Renders request parameters sent via http multipart encoding
     private def multipart_params : Hash(String, String)
       params = {} of String => String
 
@@ -55,6 +65,7 @@ module Honeybadger
       params
     end
 
+    # Helper for retrieving parameters from json encoded requests
     private def request_body : String
       if body = request.body
         body.gets_to_end
@@ -63,19 +74,23 @@ module Honeybadger
       end
     end
 
+    # Helper for retrieving parameters from json encoded requests
     private def json_params
       JSON.parse(request_body).as_h
     end
 
+    # :nodoc:
     private def content_type
       request.headers["content-type"]?
     end
 
+    # Determines if the request looks json encoded
     private def json_request? : Bool
       return false unless header = content_type
       header.matches? %r|application/json|
     end
 
+    # Determines if the request looks multipart encoded
     private def multipart_request? : Bool
       return false unless header = content_type
       header.matches? %r|^multipart/form-data|
