@@ -1,6 +1,6 @@
 # Honeybadger for Crystal
 
-HTTP::Handler and exception notifier for the [⚡Honeybadger error notifier](https://www.honeybadger.io/).
+`HTTP::Handler` and exception notifier for the :zap: [Honeybadger error notifier](https://www.honeybadger.io/).
 
 ## Getting Started
 
@@ -12,7 +12,7 @@ dependencies:
 +    github: honeybadger-io/honeybadger-crystal
 ```
 
-Add the Honeybadger::Handler to the HTTP::Server stack:
+Add the Honeybadger::Handler to the `HTTP::Server` stack:
 
 ```crystal
 honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
