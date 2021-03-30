@@ -1,4 +1,5 @@
 # Honeybadger for Crystal
+[![Crystal CI](https://github.com/honeybadger-io/honeybadger-crystal/actions/workflows/crystal.yml/badge.svg)](https://github.com/honeybadger-io/honeybadger-crystal/actions/workflows/crystal.yml)
 
 `HTTP::Handler` and exception notifier for the :zap: [Honeybadger error notifier](https://www.honeybadger.io/).
 
