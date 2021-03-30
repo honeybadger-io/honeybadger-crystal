@@ -31,6 +31,16 @@ Details for adding the handler to:
 - [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
 - [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
 
+You can also manually report exceptions to Honeybadger like so:
+
+```crystal
+begin
+  raise "OH NO!"
+rescue exception
+  Honeybadger.notify(exception)
+end
+```
+
 ## Version Requirements
 
 Crystal > 0.36.1
