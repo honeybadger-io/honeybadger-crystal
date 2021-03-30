@@ -1,0 +1,13 @@
+name: honeybadger
+version: 0.1.0
+
+authors:
+  - robacarp
+
+crystal: 0.36.1
+
+targets:
+  demo:
+    main: demo/server.cr
+
+license: MIT
