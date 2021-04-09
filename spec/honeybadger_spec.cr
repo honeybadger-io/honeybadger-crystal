@@ -1,4 +1,5 @@
 require "./spec_helper"
+
 require "yaml"
 
 describe Honeybadger do
@@ -10,15 +11,24 @@ describe Honeybadger do
     end
   end
 
-  describe "#configure" do
-    it "allows setting and retrieving the api key" do
-      old_api_key = Honeybadger.api_key
-      new_api_key = "12345"
+  describe "#configure with a block" do
+    it "yields an instance of Configuration" do
+      Honeybadger.configure do |settings|
+        settings.should be_a Honeybadger::Configuration
+      end
+    end
+  end
 
+  describe "#configure without a block" do
+    protect_configuration do
+      Honeybadger.configure("000000", report_data: false)
+      Honeybadger.report_data?.should be_false
+    end
+
+    protect_configuration do
+      new_api_key = "12345"
       Honeybadger.configure api_key: new_api_key
       Honeybadger.api_key.should eq new_api_key
-
-      Honeybadger.configure api_key: old_api_key
     end
   end
 end

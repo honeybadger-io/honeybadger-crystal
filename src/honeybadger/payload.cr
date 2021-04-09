@@ -5,15 +5,6 @@ module Honeybadger
   # This payload provides a baseline for general use and is intended
   # to be extended by framework or application specific uses to fill in details.
   class Payload
-    # The path to source code at compile time.
-    COMPILE_DIR  = {{ run("../run_macros/pwd.cr").stringify }}.strip
-
-    # The git revision at compile time.
-    GIT_REVISION = {{ run("../run_macros/git_revision.cr").stringify }}.strip
-
-    # The system or container hostname.
-    HOSTNAME     = System.hostname
-
     # The exception to be rendered.
     getter exception : Exception
 
@@ -101,17 +92,17 @@ module Honeybadger
     private def server_json(builder)
       builder.field "server" do
         builder.object do
-          builder.field "project_root", COMPILE_DIR
+          builder.field "project_root", Honeybadger.project_root
 
           if env = environment_name
             builder.field "environment_name", env
           end
 
-          if hostname = HOSTNAME
+          if hostname = Honeybadger.hostname
             builder.field "hostname", hostname
           end
 
-          if revision = GIT_REVISION
+          if revision = Honeybadger.git_revision
             builder.field "revision", revision
           end
 

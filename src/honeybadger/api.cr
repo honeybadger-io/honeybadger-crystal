@@ -1,8 +1,6 @@
 module Honeybadger
   # An API wrapper for the Honeybadger HTTP API
   class Api
-    BASE_URL = Path["https://api.honeybadger.io"]
-
     # :nodoc:
     def initialize
     end
@@ -23,7 +21,7 @@ module Honeybadger
 
     # :nodoc:
     private def request(path : String, message_body : String)
-      endpoint = BASE_URL.join path
+      endpoint = Honeybadger.endpoint.join path
       HTTP::Client.post endpoint.to_s, request_headers, body: message_body
     end
   end
