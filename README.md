@@ -13,18 +13,16 @@ dependencies:
 +    github: honeybadger-io/honeybadger-crystal
 ```
 
-Add the Honeybadger::Handler to the `HTTP::Server` stack:
+Add the `Honeybadger::Handler` to the `HTTP::Server` stack:
 
 ```crystal
 honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
-honeybadger_enabled = MyServer.production?
 
 Honeybadger.configure(api_key: honeybadger_api_key)
 
-Honeybadger::Handler.new(
-  enabled: honeybadger_enabled,
-  factory: Honeybadger::Payload
-)
+HTTP::Server.new([Honeybadger::Handler.new]) do |context|
+  # ...
+end
 ```
 
 Details for adding the handler to:
@@ -32,15 +30,45 @@ Details for adding the handler to:
 - [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
 - [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
 
-You can also manually report exceptions to Honeybadger like so:
+### Reporting exceptions
+
+For non-web contexts, manually report exceptions to Honeybadger like so:
 
 ```crystal
 begin
+  # run application code
   raise "OH NO!"
 rescue exception
   Honeybadger.notify(exception)
 end
 ```
+
+## Configuration
+
+To set configuration options, use the `Honeybadger.configure` method. For the default, out of the box configuration, provide the API key:
+
+```crystal
+Honeybadger.configure("your api key")
+```
+
+For more configuration options, you can get access to the entire configuration object with a block:
+
+```crystal
+Honeybadger.configure do |settings|
+  settings.api_key = "your api key"
+  settings.hostname = "badger"
+end
+```
+
+The following configuration options are available:
+
+|  Name | Type | Default | Example |
+| ----- | ---- | ------- | ------- |
+| api_key | String | `""` | `"badgers"` |
+| endpoint | Path|String | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` |
+| hostname | String | The hostname of the current server. | `"badger"` |
+| project_root | String | The current working directory | `"/path/to/project"` |
+| report_data | `bool` | `true` | `false` |
 
 ## Version Requirements
 
