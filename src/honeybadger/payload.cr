@@ -102,7 +102,7 @@ module Honeybadger
             builder.field "hostname", hostname
           end
 
-          if revision = Honeybadger.git_revision
+          if revision = Honeybadger.revision
             builder.field "revision", revision
           end
 

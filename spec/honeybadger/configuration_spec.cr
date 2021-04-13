@@ -30,8 +30,8 @@ describe Honeybadger::Configuration do
       end
     end
 
-    it "populates the git_revision" do
-      Honeybadger.git_revision.should_not be ""
+    it "populates the revision" do
+      Honeybadger.revision.should_not be ""
     end
 
     it "populates the hostname" do

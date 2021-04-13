@@ -11,7 +11,7 @@ module Honeybadger
     property endpoint : Path = Path["https://api.honeybadger.io"]
 
     # The project git revision. Evaluated at compile time.
-    getter git_revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
+    getter revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
 
     # The system or container hostname.
     property hostname : String = System.hostname
@@ -57,7 +57,7 @@ module Honeybadger
     yield configuration
   end
 
-  {% for method in [:api_key, :endpoint, :project_root, :git_revision, :hostname]%}
+  {% for method in [:api_key, :endpoint, :project_root, :revision, :hostname]%}
     # Alias of `Configuration.{{ method.id }}`.
     def self.{{ method.id }}
       configuration.{{ method.id }}
