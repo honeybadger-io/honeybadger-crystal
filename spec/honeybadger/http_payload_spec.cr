@@ -1,21 +1,6 @@
 require "../spec_helper"
-require "file_utils"
 
 describe Honeybadger::HttpPayload do
-  describe "compile time data collection" do
-    it "populates the compile_dir" do
-      Honeybadger::HttpPayload::COMPILE_DIR.should eq FileUtils.pwd
-    end
-
-    it "populates the hostname" do
-      Honeybadger::HttpPayload::HOSTNAME.should_not be ""
-    end
-
-    it "populates the git_revision" do
-      Honeybadger::HttpPayload::GIT_REVISION.should_not be ""
-    end
-  end
-
   describe "to_json" do
     it "embeds the request path" do
       expected_request_path = "/honeybadger/crystal"
