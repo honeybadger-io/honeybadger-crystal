@@ -17,9 +17,6 @@ module Honeybadger
     # details into the payload.
     def request_json(builder); end
 
-    # Stub implemented to provide the environment name, e.g. "production"
-    def environment_name; end
-
     # Renders the complete json payload.
     def to_json(builder : JSON::Builder)
       builder.object do
@@ -94,7 +91,7 @@ module Honeybadger
         builder.object do
           builder.field "project_root", Honeybadger.project_root
 
-          if env = environment_name
+          if env = Honeybadger.configuration.environment
             builder.field "environment_name", env
           end
 

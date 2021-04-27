@@ -57,7 +57,7 @@ describe Honeybadger::Payload do
     end
 
     it "has the environment" do
-      rendered_and_parsed_payload["server"]["environment_name"].as_s?.should eq "testing environment"
+      rendered_and_parsed_payload["server"]["environment_name"].as_s?.should eq Honeybadger.configuration.environment
     end
   end
 end

@@ -9,9 +9,5 @@ module Honeybadger
     rescue e
       return e
     end
-
-    def environment_name
-      "testing environment"
-    end
   end
 end
