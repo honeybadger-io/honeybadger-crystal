@@ -73,7 +73,7 @@ describe Honeybadger::Configuration do
             config.development_environments = ["dont_send_data"]
             config.environment = "send_data"
 
-            # but the report data is true
+            # but the report data is false
             config.report_data = false
           end
 
