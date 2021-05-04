@@ -13,13 +13,20 @@ dependencies:
 +    github: honeybadger-io/honeybadger-crystal
 ```
 
-Add the `Honeybadger::Handler` to the `HTTP::Server` stack:
+Configure your API key (available under Project Settings in Honeybadger):
 
 ```crystal
-honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
+Honeybadger.configure do |config|
+  config.api_key = ENV["HONEYBADGER_API_KEY"]? || "API Key"
+  config.environment = ENV["HONEYBADGER_ENVIRONMENT"]? || "production"
+end
+```
 
-Honeybadger.configure(api_key: honeybadger_api_key)
+### Reporting Errors
 
+If you're using a web framework, add the `Honeybadger::Handler` to the `HTTP::Server` stack:
+
+```crystal
 HTTP::Server.new([Honeybadger::Handler.new]) do |context|
   # ...
 end
@@ -30,9 +37,7 @@ Details for adding the handler to:
 - [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
 - [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
 
-### Reporting exceptions
-
-For non-web contexts, manually report exceptions to Honeybadger like so:
+For non-web contexts, or to manually report exceptions to Honeybadger, use `Honeybadger.notify`:
 
 ```crystal
 begin
@@ -45,18 +50,12 @@ end
 
 ## Configuration
 
-To set configuration options, use the `Honeybadger.configure` method. For the default, out of the box configuration, provide the API key:
+To set configuration options, use the `Honeybadger.configure` method:
 
 ```crystal
-Honeybadger.configure("your api key")
-```
-
-For more configuration options, you can get access to the entire configuration object with a block:
-
-```crystal
-Honeybadger.configure do |settings|
-  settings.api_key = "your api key"
-  settings.hostname = "badger"
+Honeybadger.configure do |config|
+  config.api_key = "API Key"
+  config.environment = "production"
 end
 ```
 
