@@ -115,7 +115,7 @@ describe Honeybadger::Configuration do
         end
       end
 
-      it "allows setting the development environment" do
+      it "allows setting the current environment" do
         protect_configuration do
           Honeybadger.configure("xxxx", environment: "honeybadger_test")
           Honeybadger.configuration.environment.should eq "honeybadger_test"
@@ -128,6 +128,10 @@ describe Honeybadger::Configuration do
 
           Honeybadger.configuration.environment.should eq "honeybadger_development"
         end
+      end
+
+      it "defaults to a nil environment name" do
+        Honeybadger.configuration.environment.should be_nil
       end
 
       it "defaults to not a development environment" do

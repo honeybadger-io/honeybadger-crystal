@@ -1,8 +1,7 @@
 require "../spec_helper"
 
 private def rendered_and_parsed_payload
-  rendered = Honeybadger::ExamplePayload.new.to_json
-  JSON.parse(rendered)
+  JSON.parse Honeybadger::ExamplePayload.new.to_json
 end
 
 describe Honeybadger::Payload do
@@ -56,8 +55,11 @@ describe Honeybadger::Payload do
       rendered_and_parsed_payload["server"]["pid"].as_i?.should be_a Int32
     end
 
-    it "has the environment" do
-      rendered_and_parsed_payload["server"]["environment_name"].as_s?.should eq Honeybadger.configuration.environment
+    it "has the environment when it's available" do
+      protect_configuration do
+        Honeybadger.configuration.environment = "honeybadger_tests"
+        rendered_and_parsed_payload["server"]["environment_name"].as_s?.should eq Honeybadger.configuration.environment
+      end
     end
   end
 end

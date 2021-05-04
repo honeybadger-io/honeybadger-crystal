@@ -70,7 +70,7 @@ The following configuration options are available:
 | project_root | String | The current working directory | `"/path/to/project"` |
 | report_data | `bool` | `true` | `false` |
 | development_environments | Array(String) | ["development","test"] | |
-| environment | String | `"production"` | |
+| environment | String? | `nil` | `"production"` |
 
 ## Version Requirements
 

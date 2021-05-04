@@ -14,7 +14,7 @@ module Honeybadger
     property endpoint : Path = Path["https://api.honeybadger.io"]
 
     # The app environment
-    property environment : String = "production"
+    property environment : String? = nil
 
     # The project git revision. Evaluated at compile time.
     getter revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
@@ -37,7 +37,12 @@ module Honeybadger
     end
 
     def development? : Bool
-      development_environments.includes? environment
+      if env = environment
+        development_environments.includes? environment
+      else
+        # if the environment is nil, it's never development
+        false
+      end
     end
 
     # When report_data is unset, default to development? logic.
