@@ -69,6 +69,8 @@ The following configuration options are available:
 | hostname | String | The hostname of the current server. | `"badger"` |
 | project_root | String | The current working directory | `"/path/to/project"` |
 | report_data | `bool` | `true` | `false` |
+| development_environments | Array(String) | ["development","test"] | |
+| environment | String? | `nil` | `"production"` |
 
 ## Version Requirements
 

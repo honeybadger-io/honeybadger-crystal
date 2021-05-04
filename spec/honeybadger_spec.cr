@@ -21,8 +21,8 @@ describe Honeybadger do
 
   describe "#configure without a block" do
     protect_configuration do
-      Honeybadger.configure("000000", report_data: false)
-      Honeybadger.report_data?.should be_false
+      Honeybadger.configure("000000", environment: "development")
+      Honeybadger.configuration.environment.should eq "development"
     end
 
     protect_configuration do

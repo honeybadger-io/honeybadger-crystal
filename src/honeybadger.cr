@@ -7,8 +7,14 @@ module Honeybadger
     # A Honeybadger API key.
     property api_key = ""
 
+    # The list of environments considered "development"
+    property development_environments : Array(String) = ["development", "test"]
+
     # The API endpoint for sending Honeybadger payloads.
     property endpoint : Path = Path["https://api.honeybadger.io"]
+
+    # The app environment
+    property environment : String? = nil
 
     # The project git revision. Evaluated at compile time.
     getter revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
@@ -19,12 +25,36 @@ module Honeybadger
     # The path to the projects source code. Evaluated at compile time.
     property project_root : String = {{ run("./run_macros/pwd.cr").stringify }}.strip
 
-    # Send data to the Honeybadger collector
-    property report_data = true
+    # Explicitly override the development environment check.
+    # Nil = check for development environment
+    # True = always report data
+    # False = never report data
+    property report_data : Bool? = nil
 
     def endpoint=(path : String) : String
       @endpoint = Path[path]
       path
+    end
+
+    def development? : Bool
+      if env = environment
+        development_environments.includes? environment
+      else
+        # if the environment is nil, it's never development
+        false
+      end
+    end
+
+    # When report_data is unset, default to development? logic.
+    def report_data? : Bool
+      case @report_data
+      when nil
+        ! development?
+      when true
+        true
+      else
+        false
+      end
     end
   end
 
@@ -38,10 +68,10 @@ module Honeybadger
   #   honeybadger_api_key = ENV["HONEYBADGER_API_KEY"]? || "00000000"
   #   Honeybadger.configure(api_key: honeybadger_api_key)
   # ```
-  def self.configure(api_key : String, *, report_data = true) : Nil
+  def self.configure(api_key : String, *, environment : String? = nil) : Nil
     configure do |s|
       s.api_key = api_key
-      s.report_data = report_data
+      s.environment = environment if environment
     end
   end
 
@@ -66,7 +96,7 @@ module Honeybadger
 
   # Alias of `Configuration.report_data`
   def self.report_data? : Bool
-    configuration.report_data
+    configuration.report_data?
   end
 
   def self.notify(exception : Exception) : Nil

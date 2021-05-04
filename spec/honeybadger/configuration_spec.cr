@@ -54,13 +54,90 @@ describe Honeybadger::Configuration do
       end
     end
 
-    it "has report_data" do
-      Honeybadger.report_data?.should be_true
+    describe "report_data" do
+      it "allows setting the report_data variable" do
+        protect_configuration do
+          Honeybadger.configuration.report_data = false
+          Honeybadger.report_data?.should be_false
+        end
+      end
 
-      protect_configuration do
-        Honeybadger.configuration.report_data = false
-        Honeybadger.report_data?.should be_false
+      it "defaults to true" do
+        Honeybadger.report_data?.should be_true
+      end
+
+      it "overrides development environments" do
+        protect_configuration do
+          Honeybadger.configure do |config|
+            # when the environments "look like production"
+            config.development_environments = ["dont_send_data"]
+            config.environment = "send_data"
+
+            # but the report data is false
+            config.report_data = false
+          end
+
+          Honeybadger.report_data?.should be_false
+        end
+
+        protect_configuration do
+          Honeybadger.configure do |config|
+            # when the environment "look like development"
+            config.development_environments = ["dont_send_data"]
+            config.environment = "dont_send_data"
+
+            # but the report data flag is true
+            config.report_data = true
+          end
+
+          Honeybadger.report_data?.should be_true
+        end
       end
     end
+
+    describe "environments" do
+      it "defaults development and test to be develpment environments" do
+        protect_configuration do
+          ["development","test"].each do |tested_env|
+            Honeybadger.configuration.environment = tested_env
+            Honeybadger.configuration.development?.should be_true
+          end
+        end
+      end
+
+      it "allows overriding the development environments" do
+        protect_configuration do
+          Honeybadger.configure do |configure|
+            configure.development_environments = ["test"]
+          end
+
+          Honeybadger.configuration.development_environments.should eq ["test"]
+        end
+      end
+
+      it "allows setting the current environment" do
+        protect_configuration do
+          Honeybadger.configure("xxxx", environment: "honeybadger_test")
+          Honeybadger.configuration.environment.should eq "honeybadger_test"
+        end
+
+        protect_configuration do
+          Honeybadger.configure do |config|
+            config.environment = "honeybadger_development"
+          end
+
+          Honeybadger.configuration.environment.should eq "honeybadger_development"
+        end
+      end
+
+      it "defaults to a nil environment name" do
+        Honeybadger.configuration.environment.should be_nil
+      end
+
+      it "defaults to not a development environment" do
+        Honeybadger.configuration.development?.should be_false
+      end
+    end
+
   end
 end
