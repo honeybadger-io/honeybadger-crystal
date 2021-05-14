@@ -17,7 +17,7 @@ module Honeybadger
     property environment : String? = nil
 
     # The project git revision. Evaluated at compile time.
-    getter revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
+    property revision : String = {{ run("./run_macros/git_revision.cr").stringify }}.strip
 
     # The system or container hostname.
     property hostname : String = System.hostname
@@ -31,11 +31,54 @@ module Honeybadger
     # False = never report data
     property report_data : Bool? = nil
 
+    def initialize
+      set_from_env
+    end
+
+    # Reads configuration from honeybadger prefixed environment variables
+    def set_from_env
+      {% begin %}
+      {% simple_vars = [ "api_key", "development_environments", "endpoint", "environment", "revision", "hostname", "project_root", "report_data" ] %}
+      {% for var in simple_vars %}
+        if %variable = ENV["HONEYBADGER_{{ var.upcase.id }}"]?
+          self.{{ var.id }} = %variable
+        end
+      {% end %}
+      {% end %}
+    end
+
+    # Configure development environment list with a string.
+    #
+    # Used to set the value from an environment variable.
+    # Input is split on commas and striped of leading/trailing whitespace.
+    #
+    # ```
+    # config.development_environments = "development, testing, staging"
+    # config.development_environments # => ["development", "testing", "staging"]
+    # ```
+    def development_environments=(value : String)
+      @development_environments = value.split(",").map(&.strip)
+    end
+
+    # Configures API endpoint with a string.
+    #
+    # Used to set the value from an environment variable.
+    #
+    # ```
+    # config.endpoint = "http://new_api.honeybadger.io"
+    # config.endpoint # => Path["http://new_api.honeybadger.io"]
+    # ```
     def endpoint=(path : String) : String
       @endpoint = Path[path]
       path
     end
 
+    # Configures report_data with a string.
+    def report_data=(value : String) : Bool
+      @report_data = value.downcase == "true"
+    end
+
+    # Is the current environment considered a development environment?
     def development? : Bool
       if env = environment
         development_environments.includes? environment
@@ -45,6 +88,8 @@ module Honeybadger
       end
     end
 
+    # Should Honeybadger.cr send data to the honeybadger api?
+    #
     # When report_data is unset, default to development? logic.
     def report_data? : Bool
       case @report_data

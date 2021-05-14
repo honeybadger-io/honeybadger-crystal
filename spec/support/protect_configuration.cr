@@ -1,3 +1,5 @@
+require "../spec_helper"
+
 module Honeybadger
   class_setter configuration : Configuration
 end
@@ -12,7 +14,6 @@ describe "protect_configuration" do
   it "protects the configuration" do
     pristine_configuration = Honeybadger.configuration
     good_key = pristine_configuration.api_key
-    assert false
 
     protect_configuration do
       bad_key = good_key + "test leakage"
