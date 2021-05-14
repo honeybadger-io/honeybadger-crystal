@@ -61,15 +61,25 @@ end
 
 The following configuration options are available:
 
-|  Name | Type | Default | Example |
-| ----- | ---- | ------- | ------- |
-| api_key | String | `""` | `"badgers"` |
-| endpoint | Path|String | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` |
-| hostname | String | The hostname of the current server. | `"badger"` |
-| project_root | String | The current working directory | `"/path/to/project"` |
-| report_data | `bool` | `true` | `false` |
-| development_environments | Array(String) | ["development","test"] | |
-| environment | String? | `nil` | `"production"` |
+|  Name | Type | Default | Example | Environment Var |
+| ----- | ---- | ------- | ------- | --------------- |
+| api_key | String | `""` | `"badgers"` | HONEYBADGER_API_KEY |
+| endpoint | Path|String | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` | HONEYBADGER_ENDPOINT |
+| hostname | String | The hostname of the current server. | `"badger"` | HONEYBADGER_HOSTNAME |
+| project_root | String | The current working directory | `"/path/to/project"` | HONEYBADGER_PROJECT_ROOT |
+| report_data | `bool` | `true` | `false` | HONEYBADGER_REPORT_DATA |
+| development_environments | Array(String) | ["development","test"] | | HONEYBADGER_DEVELOPMENT_ENVIRONMENTS |
+| environment | String? | `nil` | `"production"` | HONEYBADGER_ENVIRONMENT |
+
+### Environment based config
+
+Honeybadger can also be configured from environment variables. Each variable has a correlated environment variable and is prefixed with `HONEYBADGER_`. For example:
+
+```
+env HONEYBADGER_API_KEY=2468 ./server
+```
+
+All environment variables are documented in the configuration table above.
 
 ## Version Requirements
 
