@@ -64,7 +64,7 @@ The following configuration options are available:
 |  Name | Type | Default | Example | Environment Var |
 | ----- | ---- | ------- | ------- | --------------- |
 | api_key | String | `""` | `"badgers"` | HONEYBADGER_API_KEY |
-| endpoint | Path|String | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` | HONEYBADGER_ENDPOINT |
+| endpoint | Path\|String | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` | HONEYBADGER_ENDPOINT |
 | hostname | String | The hostname of the current server. | `"badger"` | HONEYBADGER_HOSTNAME |
 | project_root | String | The current working directory | `"/path/to/project"` | HONEYBADGER_PROJECT_ROOT |
 | report_data | `bool` | `true` | `false` | HONEYBADGER_REPORT_DATA |
