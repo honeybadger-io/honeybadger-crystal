@@ -8,14 +8,38 @@ module Honeybadger
     # The exception to be rendered.
     getter exception : Exception
 
-    # Subclasses of Payload must set @exception, but will likely need to
-    # take additional parameters for context.
-    def initialize(@exception : Exception)
+    getter context : ContextHash
+
+    def set_context(context_hash : ContextHash) : Nil
+      @context = context_hash
     end
 
-    # Stub implemented to ease the common paradigm of embedding request
-    # details into the payload.
-    def request_json(builder); end
+    # Subclasses of Payload must set @exception, but will likely need to
+    # take additional parameters.
+    def initialize(@exception : Exception)
+      @context = ContextHash.new
+    end
+
+    # A basic request object contains just a context object.
+    # Override this to embed actual request details.
+    def request_json(builder)
+      builder.field "request" do
+        builder.object do
+          builder.field "context" do
+            builder.object do
+              context_json(builder)
+            end
+          end
+        end
+      end
+    end
+
+    # Renders request context provided by http middleware.
+    def context_json(builder)
+      context.each do |key, value|
+        builder.field key, value
+      end
+    end
 
     # Renders the complete json payload.
     def to_json(builder : JSON::Builder)
@@ -108,5 +132,9 @@ module Honeybadger
       end
     end
 
+    def context : ContextHash
+      #todo merge global or thread context in here
+      @context
+    end
   end
 end

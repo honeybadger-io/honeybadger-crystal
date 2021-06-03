@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Invoke with your honeybadger api key in the environment like this:
+# HONEYBADGER_API_KEY=nnnnnnnn script/demo
+
+set -euo pipefail
+
+crystal build demo/http_context.cr -o bin/http_context --error-trace
+
+bin/http_context &
+server_pid="$!"
+
+sleep 1 # wait for server to listen for requests
+
+curl -s http://localhost:8080/raise
+
+sleep 1 # wait for server to send the payload
+
+kill "$server_pid"
