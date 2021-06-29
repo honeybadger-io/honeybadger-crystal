@@ -1,7 +1,7 @@
 require "./honeybadger/*"
 
 module Honeybadger
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   alias ContextHash = Hash(String, String | Int32)
 
