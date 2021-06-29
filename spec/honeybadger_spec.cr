@@ -41,6 +41,7 @@ describe Honeybadger do
     it "allows specifying the context" do
       exception = Honeybadger::ExamplePayload.generate_exception
       Honeybadger.notify(exception, example_context)
+      Honeybadger.notify(exception, context: example_context)
     end
   end
 end
