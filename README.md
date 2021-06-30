@@ -9,6 +9,8 @@ The change log for this shard is included in this repository: https://github.com
 
 ## Getting Started
 
+### Installing the Library
+
 Update your `shard.yml` to include honeybadger:
 
 ```diff
@@ -26,7 +28,7 @@ Honeybadger.configure do |config|
 end
 ```
 
-### Reporting Errors
+### Reporting Errors in Web Frameworks
 
 If you're using a web framework, add the `Honeybadger::Handler` to the `HTTP::Server` stack:
 
@@ -40,6 +42,10 @@ Details for adding the handler to:
 
 - [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
 - [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
+
+For an example of adding additional details—including user information—to error reports, see [demo/http_context.cr](https://github.com/honeybadger-io/honeybadger-crystal/blob/main/demo/http_context.cr)
+
+### Reporting Errors Manually
 
 For non-web contexts, or to manually report exceptions to Honeybadger, use `Honeybadger.notify`:
 
