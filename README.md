@@ -3,6 +3,10 @@
 
 `HTTP::Handler` and exception notifier for the :zap: [Honeybadger error notifier](https://www.honeybadger.io/).
 
+## Resources
+
+The change log for this shard is included in this repository: https://github.com/honeybadger-io/honeybadger-crystal/blob/main/CHANGELOG.md
+
 ## Getting Started
 
 Update your `shard.yml` to include honeybadger:
@@ -46,6 +50,12 @@ begin
 rescue exception
   Honeybadger.notify(exception)
 end
+```
+
+`Honeybadger.notify` can also take a context hash to provide details about when or why an event occurred:
+
+```crystal
+Honeybadger.notify(exception, context: { "user_id" => user.id })
 ```
 
 ## Configuration

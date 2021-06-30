@@ -1,6 +1,7 @@
 require "spec"
 require "../src/honeybadger"
 
+require "./support/example_context"
 require "./support/example_payload"
 require "./support/mock_http"
 require "./support/protect_configuration"

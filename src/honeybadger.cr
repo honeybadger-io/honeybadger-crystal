@@ -1,7 +1,9 @@
 require "./honeybadger/*"
 
 module Honeybadger
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
+
+  alias ContextHash = Hash(String, String | Int32)
 
   class Configuration
     # A Honeybadger API key.
@@ -146,5 +148,11 @@ module Honeybadger
 
   def self.notify(exception : Exception) : Nil
     Dispatch.send_async Payload.new(exception)
+  end
+
+  def self.notify(exception : Exception, context : ContextHash) : Nil
+    payload = Payload.new(exception)
+    payload.set_context(context)
+    Dispatch.send_async payload
   end
 end

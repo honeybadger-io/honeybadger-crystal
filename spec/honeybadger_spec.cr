@@ -31,4 +31,17 @@ describe Honeybadger do
       Honeybadger.api_key.should eq new_api_key
     end
   end
+
+  describe "#notify" do
+    it "allows manually dispatching an erorr" do
+      exception = Honeybadger::ExamplePayload.generate_exception
+      Honeybadger.notify(exception)
+    end
+
+    it "allows specifying the context" do
+      exception = Honeybadger::ExamplePayload.generate_exception
+      Honeybadger.notify(exception, example_context)
+      Honeybadger.notify(exception, context: example_context)
+    end
+  end
 end

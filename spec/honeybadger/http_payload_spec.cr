@@ -6,7 +6,7 @@ describe Honeybadger::HttpPayload do
       expected_request_path = "/honeybadger/crystal"
 
       context = MockHttp.with_request resource: expected_request_path
-      payload = Honeybadger::HttpPayload.new Exception.new, context
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
       JSON.parse(payload.to_json)["request"]["url"].as_s.should eq expected_request_path
     end
 
@@ -16,7 +16,7 @@ describe Honeybadger::HttpPayload do
         request: MockHttp.build_form_request params: params
       )
 
-      payload = Honeybadger::HttpPayload.new Exception.new, context
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
       results = JSON.parse(payload.to_json)
 
       params.each do |key, value|
@@ -30,7 +30,7 @@ describe Honeybadger::HttpPayload do
         request: MockHttp.build_multipart_request params: params
       )
 
-      payload = Honeybadger::HttpPayload.new Exception.new, context
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
       results = JSON.parse(payload.to_json)
 
       params.each do |key, value|
@@ -44,7 +44,7 @@ describe Honeybadger::HttpPayload do
         request: MockHttp.build_json_request params: params
       )
 
-      payload = Honeybadger::HttpPayload.new Exception.new, context
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
       results = JSON.parse(payload.to_json)
 
       params.each do |key, value|

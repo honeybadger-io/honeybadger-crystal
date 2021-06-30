@@ -1,6 +1,7 @@
 module Honeybadger
   class ExamplePayload < Payload
     def initialize(@exception : Exception = self.class.generate_exception)
+      super(@exception)
     end
 
     # Generates an exception with a backtrace for testing.

@@ -12,23 +12,26 @@ module Honeybadger
     getter exception
 
     # The request in which the exception was triggered.
-    getter request : HTTP::Request
+    getter http_request : HTTP::Request
 
-    # :nodoc:
-    getter context
-
-    def initialize(@exception : Exception, @context : HTTP::Server::Context)
-      @request = @context.request
+    def initialize(@exception : Exception, @http_request : HTTP::Request)
+      super(@exception)
     end
 
     # Renders the "request" stanza of the json payload.
     def request_json(builder)
       builder.field "request" do
         builder.object do
-          builder.field "url", request.path
+          builder.field "url", http_request.path
           builder.field "params" do
             builder.object do
               request_params builder
+            end
+          end
+
+          builder.field "context" do
+            builder.object do
+              context_json builder
             end
           end
         end
@@ -58,7 +61,7 @@ module Honeybadger
     private def multipart_params : Hash(String, String)
       params = {} of String => String
 
-      HTTP::FormData.parse(context.request) do |part|
+      HTTP::FormData.parse(http_request) do |part|
         params[part.name] = part.body.gets_to_end
       end
 
@@ -67,7 +70,7 @@ module Honeybadger
 
     # Helper for retrieving parameters from json encoded requests
     private def request_body : String
-      if body = request.body
+      if body = http_request.body
         body.gets_to_end
       else
         "{}"
@@ -81,7 +84,7 @@ module Honeybadger
 
     # :nodoc:
     private def content_type
-      request.headers["content-type"]?
+      http_request.headers["content-type"]?
     end
 
     # Determines if the request looks json encoded
