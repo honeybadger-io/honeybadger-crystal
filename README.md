@@ -9,7 +9,7 @@ The change log for this shard is included in this repository: https://github.com
 
 ## Getting Started
 
-### Installing the Library
+### Installation
 
 Update your `shard.yml` to include honeybadger:
 
@@ -28,7 +28,9 @@ Honeybadger.configure do |config|
 end
 ```
 
-### Reporting Errors in Web Frameworks
+### Reporting Errors
+
+#### Reporting Errors in Web Frameworks
 
 If you're using a web framework, add the `Honeybadger::Handler` to the `HTTP::Server` stack:
 
@@ -43,9 +45,7 @@ Details for adding the handler to:
 - [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
 - [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
 
-For an example of adding additional details—including user information—to error reports, see [demo/http_context.cr](https://github.com/honeybadger-io/honeybadger-crystal/blob/main/demo/http_context.cr)
-
-### Reporting Errors Manually
+#### Reporting Errors Manually
 
 For non-web contexts, or to manually report exceptions to Honeybadger, use `Honeybadger.notify`:
 
@@ -58,11 +58,20 @@ rescue exception
 end
 ```
 
-`Honeybadger.notify` can also take a context hash to provide details about when or why an event occurred:
+### Identifying Users
+
+Honeybadger can track what users have encountered each error. To identify the current user in error reports, add a user identifier and/or email address to Honeybadger's `context` hash:
 
 ```crystal
-Honeybadger.notify(exception, context: { "user_id" => user.id })
+Honeybadger.notify(exception, context: {
+  "user_id" => user.id,
+  "user_email" => "user@example.com"
+})
 ```
+
+For an example of identifying users in HTTP handlers, see [demo/http_context.cr](https://github.com/honeybadger-io/honeybadger-crystal/blob/main/demo/http_context.cr)
+
+[Learn more about context data in Honeybadger](https://docs.honeybadger.io/guides/errors/#context-data)
 
 ## Configuration
 
