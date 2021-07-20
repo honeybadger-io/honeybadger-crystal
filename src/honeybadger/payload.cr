@@ -8,10 +8,10 @@ module Honeybadger
     # The exception to be rendered.
     getter exception : Exception
 
-    getter context : ContextHash
-
-    def set_context(context_hash : ContextHash) : Nil
-      @context = context_hash
+    def set_context(context_hash : Hash) : Nil
+      context_hash.each do |key, value|
+        @context[key.to_s] = value.to_s
+      end
     end
 
     # Subclasses of Payload must set @exception, but will likely need to
