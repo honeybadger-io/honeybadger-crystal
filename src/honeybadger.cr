@@ -1,3 +1,4 @@
+require "./core_ext/*"
 require "./honeybadger/*"
 
 module Honeybadger
@@ -32,6 +33,10 @@ module Honeybadger
     # True = always report data
     # False = never report data
     property report_data : Bool? = nil
+
+    # Merge the log context into the Honeybadger payload
+    # before sending errors to the reporting API.
+    property merge_log_context : Bool = true
 
     def initialize
       set_from_env
@@ -146,6 +151,8 @@ module Honeybadger
     configuration.report_data?
   end
 
+
+  # Send notifications to the Honeybadger API
   def self.notify(exception : Exception) : Nil
     Dispatch.send_async Payload.new(exception)
   end

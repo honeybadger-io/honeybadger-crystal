@@ -1,12 +1,54 @@
 #!/bin/bash
 
-# Invoke with your honeybadger api key in the environment like this:
-# HONEYBADGER_API_KEY=nnnnnnnn script/demo
-
 set -euo pipefail
 
-crystal build demo/server.cr -o bin/demo
+usage () {
+  error_message=${1:-}
+  if [[ "$error_message" ]]; then
+    echo "Error: $error_message"
+    echo
+  fi
 
+  cat <<HELP
+$0: Runs a honeybadger demo
+
+Expects the honeybadger api key to be provided in the environment, like this:
+HONEYBADGER_API_KEY=nnnnnnnn $0
+
+Usage: $0 [demo name]
+
+Demos:
+
+- server		(default) a basic http demo, representing a minimal http server and exception catching.
+- http_context		A demo which implements a custom http handler.
+- fiber			Demonstrates fiber based inherited context data.
+HELP
+
+exit 1
+}
+
+demo=${1:-server}
+src=""
+
+case "$demo" in
+  server)
+    src='demo/server.cr'
+    ;;
+  http_context)
+    src='demo/http_context.cr'
+    ;;
+  fiber)
+    src='demo/fiber_context_demo.cr'
+    ;;
+  *)
+    usage "no such demo: $demo"
+esac
+
+
+echo Compiling...
+crystal build "$src" -o bin/demo --error-trace
+
+echo Running...
 bin/demo &
 server_pid="$!"
 

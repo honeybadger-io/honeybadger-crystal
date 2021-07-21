@@ -14,9 +14,9 @@ module Honeybadger
       }
     end
 
-    # Renders a `Payload` and sends it to the exception reporting api endpoint.
+    # Sends a payload to the exception reporting api endpoint.
     def send(payload)
-      Response.new request("v1/notices", payload.to_json)
+      Response.new request("v1/notices", payload)
     end
 
     # :nodoc:

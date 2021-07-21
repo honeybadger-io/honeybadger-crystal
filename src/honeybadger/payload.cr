@@ -1,3 +1,5 @@
+require "log/json"
+
 module Honeybadger
   # A Payload is a json renderable object which conforms to the honeybadger
   # json schema for [exceptions](https://docs.honeybadger.io/api/exceptions.html)
@@ -8,16 +10,9 @@ module Honeybadger
     # The exception to be rendered.
     getter exception : Exception
 
-    def set_context(context_hash : Hash) : Nil
-      context_hash.each do |key, value|
-        @context[key.to_s] = value.to_s
-      end
-    end
-
     # Subclasses of Payload must set @exception, but will likely need to
     # take additional parameters.
     def initialize(@exception : Exception)
-      @context = ContextHash.new
     end
 
     # A basic request object contains just a context object.
@@ -26,9 +21,7 @@ module Honeybadger
       builder.field "request" do
         builder.object do
           builder.field "context" do
-            builder.object do
-              context_json(builder)
-            end
+            context_json(builder)
           end
         end
       end
@@ -36,9 +29,13 @@ module Honeybadger
 
     # Renders request context provided by http middleware.
     def context_json(builder)
-      context.each do |key, value|
-        builder.field key, value
+      context = Context.current.dup
+
+      if Honeybadger.configuration.merge_log_context
+        context.merge(Log.context.metadata)
       end
+
+      context.to_json(builder)
     end
 
     # Renders the complete json payload.
@@ -130,11 +127,6 @@ module Honeybadger
           builder.field "pid", Process.pid
         end
       end
-    end
-
-    def context : ContextHash
-      #todo merge global or thread context in here
-      @context
     end
   end
 end
