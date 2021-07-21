@@ -9,7 +9,8 @@ describe "Honeybadger.notify with context" do
       { "user_id" => UUID.random },
       { "user_id" => 23 },
       { 23 => 45 },
-      { "user_age" => 3.14 }
+      { "user_age" => 3.14 },
+      { "user_is_nil" => nil }
     ]
 
     example_contexts.each do |context_hash|
