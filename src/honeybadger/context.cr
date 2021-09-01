@@ -1,6 +1,8 @@
 module Honeybadger
-  def self.context(**args) : Nil
-    Context.current.store(args)
+  def self.context(**args) : Context
+    Context.current.tap do |context|
+      context.store(args)
+    end
   end
 
   def self.clear() : Nil

@@ -43,4 +43,8 @@ describe Honeybadger::Context do
     context_2["shopping_cart_total"].should eq "48"
     context_2["user_id"].should eq "228"
   end
+
+  it "allows retrieving the current context" do
+    Honeybadger.context.should be_a Honeybadger::Context
+  end
 end
