@@ -3,6 +3,10 @@ module Honeybadger
     Context.current.store(args)
   end
 
+  def self.clear() : Nil
+    Context.current.clear
+  end
+
   class Context
     def initialize
       @data = Hash(String, String).new
@@ -16,7 +20,7 @@ module Honeybadger
     end
 
     private def set(key, value)
-      self.[key.to_s] = value.to_s
+      self[key.to_s] = value.to_s
     end
 
     def store(data : NamedTuple)
