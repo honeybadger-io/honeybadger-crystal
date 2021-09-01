@@ -10,9 +10,13 @@ module Honeybadger
     # The exception to be rendered.
     getter exception : Exception
 
+    # The context object from the current fiber at time of initialization.
+    @fiber_context : Context
+
     # Subclasses of Payload must set @exception, but will likely need to
     # take additional parameters.
     def initialize(@exception : Exception)
+      @fiber_context = Context.current.dup
       @explicit_context = Context.new
     end
 
@@ -30,17 +34,15 @@ module Honeybadger
 
     # Renders request context provided by http middleware.
     def context_json(builder)
-      context = Context.current.dup
-
       if Honeybadger.configuration.merge_log_context
-        context.merge(Log.context.metadata)
+        @fiber_context.merge(Log.context.metadata)
       end
 
       if explicit_context_ = @explicit_context
-        context.merge explicit_context_
+        @fiber_context.merge explicit_context_
       end
 
-      context.to_json(builder)
+      @fiber_context.to_json(builder)
     end
 
     # Allows manually appending context
