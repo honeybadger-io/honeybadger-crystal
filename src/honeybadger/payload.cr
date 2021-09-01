@@ -13,6 +13,7 @@ module Honeybadger
     # Subclasses of Payload must set @exception, but will likely need to
     # take additional parameters.
     def initialize(@exception : Exception)
+      @explicit_context = Context.new
     end
 
     # A basic request object contains just a context object.
@@ -35,7 +36,16 @@ module Honeybadger
         context.merge(Log.context.metadata)
       end
 
+      if explicit_context_ = @explicit_context
+        context.merge explicit_context_
+      end
+
       context.to_json(builder)
+    end
+
+    # Allows manually appending context
+    def set_context(hash_context : Hash) : Nil
+      @explicit_context = Context.new(hash_context)
     end
 
     # Renders the complete json payload.

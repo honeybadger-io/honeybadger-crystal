@@ -12,6 +12,14 @@ module Honeybadger
       @data = Hash(String, String).new
     end
 
+    def initialize(raw_data : Hash)
+      @data = Hash(String, String).new
+
+      raw_data.each do |key, value|
+        set(key, value)
+      end
+    end
+
     delegate to_s, to: @data
     forward_missing_to @data
 
@@ -31,6 +39,12 @@ module Honeybadger
 
     def merge(log_metadata : Log::Metadata)
       log_metadata.each do |key, value|
+        set(key, value)
+      end
+    end
+
+    def merge(other_context : self)
+      other_context.each do |key, value|
         set(key, value)
       end
     end
