@@ -21,7 +21,6 @@ Demos:
 
 - server		(default) a basic http demo, representing a minimal http server and exception catching.
 - http_context		A demo which implements a custom http handler.
-- fiber			Demonstrates fiber based inherited context data.
 HELP
 
 exit 1
@@ -36,9 +35,6 @@ case "$demo" in
     ;;
   http_context)
     src='demo/http_context.cr'
-    ;;
-  fiber)
-    src='demo/fiber_context_demo.cr'
     ;;
   *)
     usage "no such demo: $demo"
