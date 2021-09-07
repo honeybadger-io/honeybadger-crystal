@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Refactor to open up context API typing to ease implementation (#18)
 - Allow implicit context variable declaration; scavenge data from crystal Log Context (#19)
+
+### Fixed
+- Refactor to open up context API typing to ease implementation (#18)
 
 ## [0.1.1] - 2021-06-29
 ### Added
