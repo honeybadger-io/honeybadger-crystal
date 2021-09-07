@@ -62,4 +62,35 @@ describe Honeybadger::Payload do
       end
     end
   end
+
+  describe "request" do
+    describe "context" do
+      it "merges in log context" do
+        Log.context.clear
+        Log.context.set user_id: 72
+
+        protect_configuration do
+          Honeybadger.configuration.merge_log_context = true
+          rendered_and_parsed_payload["request"]["context"]["user_id"].as_s?.should eq "72"
+        end
+
+        Log.context.clear
+      end
+
+      it "includes the context from the current fiber" do
+        Honeybadger::Context.current.clear
+        Honeybadger.context(user_id: 46)
+        rendered_and_parsed_payload["request"]["context"]["user_id"].as_s?.should eq "46"
+        Honeybadger::Context.current.clear
+      end
+
+      it "includes explicit context" do
+        payload = Honeybadger::ExamplePayload.new
+        context = { :user_id => 23 }
+        payload.set_context context
+        parsed = JSON.parse(payload.to_json)
+        parsed["request"]["context"]["user_id"].as_s?.should eq "23"
+      end
+    end
+  end
 end

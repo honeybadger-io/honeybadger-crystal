@@ -199,4 +199,18 @@ describe Honeybadger::Configuration do
       Honeybadger::Configuration.new.environment.should eq test_value
     end
   end
+
+  describe "merge_log_context" do
+    it "defaults to true" do
+      Honeybadger::Configuration.new.merge_log_context.should be_true
+    end
+
+    it "can be configured with block syntax" do
+      Honeybadger.configure do |config|
+        config.merge_log_context = false
+      end
+
+      Honeybadger.configuration.merge_log_context.should be_false
+    end
+  end
 end

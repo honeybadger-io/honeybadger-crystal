@@ -63,10 +63,14 @@ end
 Honeybadger can track what users have encountered each error. To identify the current user in error reports, add a user identifier and/or email address to Honeybadger's `context` hash:
 
 ```crystal
+# Explicit Context
 Honeybadger.notify(exception, context: {
   "user_id" => user.id,
   "user_email" => "user@example.com"
 })
+
+# Managed Context
+Honeybadger.context(user_id: user.id)
 ```
 
 For an example of identifying users in HTTP handlers, see [demo/http_context.cr](https://github.com/honeybadger-io/honeybadger-crystal/blob/main/demo/http_context.cr)
@@ -95,6 +99,9 @@ The following configuration options are available:
 | report_data | `bool` | `true` | `false` | HONEYBADGER_REPORT_DATA |
 | development_environments | Array(String) | ["development","test"] | | HONEYBADGER_DEVELOPMENT_ENVIRONMENTS |
 | environment | String? | `nil` | `"production"` | HONEYBADGER_ENVIRONMENT |
+| merge_log_context | `bool` | `true` | `false` | n/a |
+
+Documentation for context variables can be found [in the Configuration class](https://github.com/honeybadger-io/honeybadger-crystal/blob/main/src/honeybadger/configuration.cr)
 
 ### Environment based config
 

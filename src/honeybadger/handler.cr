@@ -18,16 +18,10 @@ module Honeybadger
       response = call_next http_context
     rescue exception
       payload = @factory.new(exception, http_context.request)
-      payload.set_context(context)
 
       Honeybadger::Dispatch.send_async(payload)
 
       raise exception
-    end
-
-    # Extend to provide helpful data about the context of this request.
-    def context : Honeybadger::ContextHash
-      Honeybadger::ContextHash.new
     end
   end
 end

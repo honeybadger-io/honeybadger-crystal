@@ -24,15 +24,11 @@ module Honeybadger
         builder.object do
           builder.field "url", http_request.path
           builder.field "params" do
-            builder.object do
-              request_params builder
-            end
+            request_params builder
           end
 
           builder.field "context" do
-            builder.object do
-              context_json builder
-            end
+            context_json builder
           end
         end
       end
@@ -40,15 +36,17 @@ module Honeybadger
 
     # Renders request parameters by dispatching based on request type.
     private def request_params(builder)
-      case
-      when multipart_request?
-        multipart_params
-      when json_request?
-        json_params
-      else
-        form_params
-      end.each do |key, value|
-        builder.field key, value
+      builder.object do
+        case
+        when multipart_request?
+          multipart_params
+        when json_request?
+          json_params
+        else
+          form_params
+        end.each do |key, value|
+          builder.field key, value
+        end
       end
     end
 

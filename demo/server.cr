@@ -23,6 +23,10 @@ end
 
 router = Router.new
 router.on("/raise") do
+  # Either or both of these will work
+  Log.context.set(admin_id: 42)
+  Honeybadger.context(user_id: 23)
+
   raise "Broken!"
 end
 

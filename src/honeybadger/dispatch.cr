@@ -26,9 +26,13 @@ module Honeybadger
 
     # :nodoc:
     def send : Nil
-      return message_for(:disabled) unless Honeybadger.report_data?
-
-      message_for Api.new.send(@payload)
+      if Honeybadger.report_data?
+        message_for Api.new.send(@payload.to_json)
+      else
+        # render the payload anyway, so the codepath is still executed in development mode
+        @payload.to_json
+        message_for(:disabled)
+      end
     end
 
     # Logs a human friendly response message for standard api response codes.
