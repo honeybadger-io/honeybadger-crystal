@@ -53,7 +53,7 @@ Details for adding the handler to:
       [
         # ...
         Lucky::ErrorHandler.new(action: Errors::Show),
-        Honeybadger::AuthenticMiddleware.new,
+        Honeybadger::AuthenticHandler.new,
         # ...
       ] of HTTP::Handler
     end
