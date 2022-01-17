@@ -42,8 +42,28 @@ end
 
 Details for adding the handler to:
 
-- [Lucky Framework](https://luckyframework.org/guides/http-and-routing/http-handlers)
-- [Amber Framework](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines)
+##### Reporting errors in [Lucky Framework](https://luckyframework.org)
+
+1. Add the shard to `shard.yml`
+2. Require the shard in `src/shards.cr`
+3. Add the built-in `Honeybadger::AuthenticHandler` to your middleware stack:
+
+    ```crystal
+    def middleware : Array(HTTP::Handler)
+      [
+        # ...
+        Lucky::ErrorHandler.new(action: Errors::Show),
+        Honeybadger::AuthenticHandler.new,
+        # ...
+      ] of HTTP::Handler
+    end
+    ```
+
+Read more about HTTP Handlers in Lucky [here](https://luckyframework.org/guides/http-and-routing/http-handlers).
+
+##### Reporting errors in [Amber Framework](https://amberframework.org)
+
+Read more about Pipelines in Amber [here](https://docs.amberframework.org/amber/guides/routing/pipelines#sharing-pipelines).
 
 #### Reporting Errors Manually
 
