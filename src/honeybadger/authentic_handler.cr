@@ -11,7 +11,7 @@ module Honeybadger
     end
 
     def call(context : HTTP::Server::Context)
-      if user_id = context.session.get? @session_key
+      if (session = context.session) && session.responds_to?(:get?) && (user_id = context.session.get?(@session_key))
         Honeybadger.context user_id: user_id
       end
 
