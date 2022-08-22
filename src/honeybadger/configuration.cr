@@ -50,8 +50,11 @@ module Honeybadger
     # The API endpoint for sending Honeybadger payloads.
     property endpoint : Path = Path["https://api.honeybadger.io"]
 
-    # The app environment
+    # The current app environment.
     property environment : String? = nil
+
+    # A list of keys whose values are replaced with "[FILTERED]" in sensitive data objects.
+    property filter_keys : Array(String) = ["password", "password_confirmation", "credit_card"]
 
     # The project git revision. Evaluated at compile time.
     property revision : String = {{ run("../run_macros/git_revision.cr").stringify }}.strip

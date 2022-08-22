@@ -45,7 +45,11 @@ module Honeybadger
         else
           form_params
         end.each do |key, value|
-          builder.field key, value
+          if Honeybadger.configuration.filter_keys.includes? key
+            builder.field key, "[FILTERED]"
+          else
+            builder.field key, value
+          end
         end
       end
     end
@@ -76,8 +80,8 @@ module Honeybadger
     end
 
     # Helper for retrieving parameters from json encoded requests
-    private def json_params
-      JSON.parse(request_body).as_h
+    private def json_params : Hash(String, String)
+      JSON.parse(request_body).as_h.transform_values(&.to_s)
     end
 
     # :nodoc:
