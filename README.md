@@ -45,10 +45,12 @@ Details for adding the handler to:
 ##### Reporting errors in [Lucky Framework](https://luckyframework.org)
 
 1. Add the shard to `shard.yml`
-2. Require the shard in `src/shards.cr`
-3. Add the built-in `Honeybadger::AuthenticHandler` to your middleware stack:
+1. Add `Honeybadger::AuthenticHandler` to your middleware stack:
 
     ```crystal
+    require "honeybadger"
+    require "honeybadger/framework_handlers/authentic_handler.cr"
+
     def middleware : Array(HTTP::Handler)
       [
         # ...
