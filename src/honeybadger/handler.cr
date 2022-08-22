@@ -14,10 +14,10 @@ module Honeybadger
     end
 
     # :nodoc:
-    def call(http_context)
-      response = call_next http_context
+    def call(context)
+      response = call_next context
     rescue exception
-      payload = @factory.new(exception, http_context.request)
+      payload = @factory.new(exception, context.request)
 
       Honeybadger::Dispatch.send_async(payload)
 
