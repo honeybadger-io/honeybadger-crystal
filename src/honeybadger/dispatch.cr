@@ -8,16 +8,16 @@ module Honeybadger
   class Dispatch
     Log = ::Log.for("honeybadger")
 
-    # Sends a payload in a non-blocking way.
-    def self.send_async(payload : Payload) : Nil
-      spawn do
+    # Sends a payload to the reporting api. By default the send is asynchronous
+    # with a fiber.
+    def self.send(payload : Payload, synchronous : Bool = false) : Nil
+      if synchronous
         new(payload).send
+      else
+        spawn do
+          new(payload).send
+        end
       end
-    end
-
-    # Sends a payload to the reporting api.
-    def self.send(payload : Payload) : Nil
-      new(payload).send
     end
 
     # :nodoc:
