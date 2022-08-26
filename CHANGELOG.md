@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Pending Release
+## [0.2.2] - 2022-08-26
 ### Added
 - Implements the [filter_keys](https://docs.honeybadger.io/lib/ruby/getting-started/filtering-sensitive-data/) feature. (#27)
 - Implements several additional overloads to Honeybadger.notify. (#29)
+- Adds the `synchronous` named parameter to `Honeybadger.notify`, default is false. (#29)
 ### Fixed
 - AuthenticHandler is no longer required by default. See #28 for details on updating the honeybadger+lucky integration.
 
