@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Pending Release
 ### Added
 - Implements the [filter_keys](https://docs.honeybadger.io/lib/ruby/getting-started/filtering-sensitive-data/) feature. (#27)
-### Changed
+- Implements several additional overloads to Honeybadger.notify. (#29)
+### Fixed
 - AuthenticHandler is no longer required by default. See #28 for details on updating the honeybadger+lucky integration.
 
 ## [0.2.1] - 2022-01-20
