@@ -52,4 +52,42 @@ describe Honeybadger::HttpPayload do
       end
     end
   end
+
+  describe "request_params" do
+    it "filters keys from multipart data" do
+      params = {password: "value1", parameter: "value"}
+      context = MockHttp.new.context(
+        request: MockHttp.build_multipart_request params: params
+      )
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
+      serialized = JSON.parse(payload.to_json)
+
+      serialized["request"]["params"]["password"].should eq "[FILTERED]"
+      serialized["request"]["params"]["parameter"].should eq "value"
+    end
+
+    it "filters keys from json params" do
+      params = {password: "value1", parameter: "value"}
+      context = MockHttp.new.context(
+        request: MockHttp.build_json_request params: params
+      )
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
+      serialized = JSON.parse(payload.to_json)
+
+      serialized["request"]["params"]["password"].should eq "[FILTERED]"
+      serialized["request"]["params"]["parameter"].should eq "value"
+    end
+
+    it "filters keys from form data" do
+      params = {password: "value1", parameter: "value"}
+      context = MockHttp.new.context(
+        request: MockHttp.build_form_request params: params
+      )
+      payload = Honeybadger::HttpPayload.new Exception.new, context.request
+      serialized = JSON.parse(payload.to_json)
+
+      serialized["request"]["params"]["password"].should eq "[FILTERED]"
+      serialized["request"]["params"]["parameter"].should eq "value"
+    end
+  end
 end

@@ -213,4 +213,18 @@ describe Honeybadger::Configuration do
       Honeybadger.configuration.merge_log_context.should be_false
     end
   end
+
+  describe "filter keys" do
+    it "defaults to remove passwords and credit cards" do
+      Honeybadger::Configuration.new.filter_keys.should eq ["password", "password_confirmation", "credit_card"]
+    end
+
+    it "can be configured with block syntax" do
+      Honeybadger.configure do |config|
+        config.filter_keys = ["secret"]
+      end
+
+      Honeybadger.configuration.filter_keys.should eq ["secret"]
+    end
+  end
 end
