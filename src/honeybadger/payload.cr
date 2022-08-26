@@ -7,18 +7,34 @@ module Honeybadger
   # This payload provides a baseline for general use and is intended
   # to be extended by framework or application specific uses to fill in details.
   class Payload
-    # The exception to be rendered.
-    getter exception : Exception
+    # The exception to be rendered, if available.
+    @exception : Exception?
+
+    property error_message : String?
+    property error_class : String?
 
     # The context object from the current fiber at time of initialization.
     @fiber_context : Context
 
-    # Subclasses of Payload must set @exception, but will likely need to
+    # Subclasses of Payload can still set @exception, but will likely need to
     # take additional parameters.
-    def initialize(@exception : Exception)
+    def initialize(exception : Exception)
+      @exception = exception
+      @error_message = exception.message
+      @error_class = exception.class.name
+
       @fiber_context = Context.current.dup
       @explicit_context = Context.new
     end
+
+    def initialize(message : String, *, error_class : String? = nil)
+      @error_message = message
+      @error_class = error_class
+
+      @fiber_context = Context.current.dup
+      @explicit_context = Context.new
+    end
+
 
     # A basic request object contains just a context object.
     # Override this to embed actual request details.
@@ -75,8 +91,8 @@ module Honeybadger
     private def error_json(builder)
       builder.field "error" do
         builder.object do
-          builder.field "class", exception.class.to_s
-          builder.field "message", exception.message
+          builder.field "class", @error_class
+          builder.field "message", @error_message
           backtrace_json(builder)
         end
       end
@@ -84,10 +100,12 @@ module Honeybadger
 
     # Renders the exception backtrace into the "error" stanza.
     private def backtrace_json(builder)
-      if exception.backtrace?
+      return unless _exception = @exception
+
+      if _exception.backtrace?
         builder.field "backtrace" do
           builder.array do
-            exception.backtrace.each do |frame|
+            _exception.backtrace.each do |frame|
               builder.object do
                 encode_trace_frame builder, frame
               end

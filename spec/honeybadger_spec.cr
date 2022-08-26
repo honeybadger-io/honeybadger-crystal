@@ -45,6 +45,12 @@ describe Honeybadger do
       Honeybadger.notify(exception, context: example_context)
     end
 
+    # This is essentially a compile-time test because there are no easy testing
+    # paradigms to validate that a fiber was spawned.
+    it "allows specifying the behavior to be synchronous" do
+      Honeybadger.notify Honeybadger::ExamplePayload.generate_exception, synchronous: true
+    end
+
     it "allows specifying a context hash with stringable data types" do
       exception = Honeybadger::ExamplePayload.generate_exception
 
@@ -59,6 +65,12 @@ describe Honeybadger do
       example_contexts.each do |context_hash|
         Honeybadger.notify(exception, context: context_hash)
       end
+    end
+
+    it "allows sending a notification with a string" do
+      Honeybadger.notify "notification reason", context: { "user_id" => 23 }
+      Honeybadger.notify "notification reason", error_class: "AnError"
+      Honeybadger.notify "notification reason", synchronous: true
     end
   end
 end
