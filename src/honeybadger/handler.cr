@@ -19,7 +19,7 @@ module Honeybadger
     rescue exception
       payload = @factory.new(exception, context.request)
 
-      Honeybadger::Dispatch.send_async(payload)
+      Honeybadger::Dispatch.send(payload)
 
       raise exception
     end
