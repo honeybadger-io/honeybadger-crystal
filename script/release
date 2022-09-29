@@ -1,0 +1,145 @@
+#!/bin/bash
+
+# source: https://github.com/tumblerlock/devops_scripts
+# version: v0.1.1
+#
+# Helper script to parse and calculate release tags on a git repo.
+
+set -euo pipefail
+IFS=$'\n\t'
+
+reset='\033[0m'
+green='\033[00;32m'
+
+print_help () {
+  cat <<HELP
+$0: increments the release version most recently tagged in git.
+
+Git release tags are of the form 'vX.Y.Z'.
+
+Usage: $0 -h -d -s -F -p (major|minor|patch|-v X.Y.Z)
+
+  -d               Dry run.     Do not actually create any tag, only document what the next tag would be.
+  -h               Help.        Print this help and exit.
+  -s               Skip sync.   Skips performing a 'git fetch --tags' to sync the tag list with with origin.
+  -p               Pre Release. Create a pre-[version] tag to mark a commit for future release.
+  -v               Version.     Create tag with manually specified version.
+
+  major            Increment the major portion of the release, expressed as 'x' above.
+  minor            Increment the minor portion of the release, expressed as 'y' above.
+  patch            Increment the patch portion of the release, expressed as 'z' above.
+
+  One of major, minor, patch, or -v must be specified.
+
+HELP
+
+  exit 1
+}
+
+dry_run=false
+sync_tags=true
+new_version=false
+pre_release=false
+
+while getopts "dhspv:" opt; do
+  case $opt in
+    d) dry_run=true ;;
+    h) print_help ;;
+    s) sync_tags=false ;;
+    p) pre_release=true ;;
+    v) new_version="$OPTARG" ;;
+  esac
+done
+
+if [[ "$new_version" = false ]]; then
+  shift $(($OPTIND - 1))
+  release_edition=${1:-bad}
+
+  if [[ "$release_edition" = "bad" ]]; then
+    print_help
+  fi
+
+  case "$release_edition" in
+    major|minor|patch) ;;
+    *)
+      echo "Error: could not increment by '$release_edition'."
+      echo
+      print_help
+      ;;
+  esac
+fi
+
+
+# Pull tags from remote
+
+if [[ "$sync_tags" = true ]]; then
+  echo fetching tags from remote...
+  git fetch --tags
+fi
+
+
+# Calculate the new release tag
+
+current_version=$(
+  git tag -l 'v*'\
+    | tr -d 'v' \
+    | sort -V \
+    | tail -n 1 \
+    | tr '.' ' '
+)
+
+major=$( echo "$current_version" | awk '{ print $1 }')
+minor=$( echo "$current_version" | awk '{ print $2 }')
+patch=$( echo "$current_version" | awk '{ print $3 }')
+
+echo "Current version as parsed: $major.$minor.$patch"
+
+if [[ "$new_version" = false ]]; then
+  case "$release_edition" in
+    major)
+      major=$((major + 1))
+      minor=0
+      patch=0
+      ;;
+
+    minor)
+      minor=$((minor + 1))
+      patch=0
+      ;;
+
+    patch)
+      patch=$((patch + 1))
+      ;;
+
+  esac
+
+  new_version="$major.$minor.$patch"
+fi
+
+if [[ "$pre_release" = true ]]; then
+  git_tag="pre-$new_version"
+else
+  git_tag="v$new_version"
+fi
+
+
+# Create new release tag
+
+if [[ "$dry_run" = true ]]; then
+  echo "New tag would be $git_tag"
+  echo Dry Run. Exiting.
+else
+  git tag "$git_tag"
+  echo "Created $git_tag."
+fi
+
+
+echo
+echo "Run this command to push this tag up to github for CI and deployment:"
+echo -e " ${green}git push origin ${git_tag}${reset}"
+echo
+echo "Additionally, update the version number in these files:"
+echo " - shard.yml"
+echo " - src/honeybadger.cr"
+
+
