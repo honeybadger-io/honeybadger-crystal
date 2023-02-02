@@ -23,7 +23,7 @@ Configure your API key (available under Project Settings in Honeybadger):
 
 ```crystal
 Honeybadger.configure do |config|
-  config.api_key = ENV["HONEYBADGER_API_KEY"]? || "API Key"
+  config.api_key = ENV["HONEYBADGER_API_KEY"]? || "{{PROJECT_API_KEY}}"
   config.environment = ENV["HONEYBADGER_ENVIRONMENT"]? || "production"
 end
 ```
@@ -105,7 +105,7 @@ To set configuration options, use the `Honeybadger.configure` method:
 
 ```crystal
 Honeybadger.configure do |config|
-  config.api_key = "API Key"
+  config.api_key = "{{PROJECT_API_KEY}}"
   config.environment = "production"
 end
 ```
