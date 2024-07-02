@@ -30,4 +30,14 @@ module Honeybadger
 
     Dispatch.send payload, synchronous: synchronous
   end
+
+  private EVENT_DISPATCH = EventDispatch.new
+
+  def self.event(**properties)
+    send Event.new(**properties)
+  end
+
+  def self.send(event : Event)
+    EVENT_DISPATCH.send event
+  end
 end
