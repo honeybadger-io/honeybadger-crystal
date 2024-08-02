@@ -37,8 +37,14 @@ module Honeybadger
     private def run
       next_event = nil
 
+      # Main run loop
+      # 1. Buffer messages until either 60 seconds have passed or the buffer
+      #    exceeds 5MB
+      # 2. Flush the buffer to the Honeybadger API
+      # 3. Clear the buffer
       loop do
         buffering = true
+        wait_time = 60.seconds
 
         while buffering
           # If the previous iteration exceeded the buffer cap, we flushed it and
@@ -48,6 +54,7 @@ module Honeybadger
             next_event = nil
           end
 
+          started_waiting = Time.monotonic
           select
           when event = @channel.receive
             # Limits for events endpoint: https://docs.honeybadger.io/api/reporting-events/#limits
@@ -64,7 +71,10 @@ module Honeybadger
                 buffering = false
               end
             end
-          when timeout(1.second)
+
+            wait_time -= Time.monotonic - started_waiting
+          when timeout(wait_time)
+            buffering = false
             next_event = nil
           end
         end
