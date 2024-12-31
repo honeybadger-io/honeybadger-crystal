@@ -79,9 +79,12 @@ module Honeybadger
           end
         end
 
-        # This must be computed outside of the spawned fiber
-        payload = @buffer.to_s
-        spawn send payload
+        unless @buffer.empty?
+          # This must be computed outside of the spawned fiber so that we don't
+          # clear it in the ensure block below before it's been sent.
+          payload = @buffer.to_s
+          spawn send payload
+        end
       ensure
         @buffer.clear
       end
