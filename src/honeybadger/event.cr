@@ -9,7 +9,15 @@ module Honeybadger
     @[JSON::Field(key: "ts", converter: Honeybadger::Event::RFC3339Converter)]
     getter timestamp : Time
 
-    def initialize(@timestamp = Time.utc, **properties)
+    def self.new(**properties)
+      new Time.utc, properties
+    end
+
+    def self.new(properties : Hash)
+      new Time.utc, properties
+    end
+
+    def initialize(@timestamp, properties = NamedTuple.new)
       properties.each do |key, value|
         self[key.to_s] = value
       end
@@ -19,10 +27,12 @@ module Honeybadger
       json_unmapped[key] = coerce(value)
     end
 
+    delegate :[], :[]?, to: json_unmapped
+
     def merge(other : self) : self
       event = self.class.new(timestamp: timestamp)
 
-      json_unmapped.each { |key,value| event[key] = value }
+      json_unmapped.each { |key, value| event[key] = value }
       other.json_unmapped.each { |key, value| event[key] = value }
 
       event

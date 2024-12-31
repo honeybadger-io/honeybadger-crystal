@@ -87,5 +87,11 @@ module Honeybadger
       # The second event's non-timestamp properties override that of the first
       data.should contain %{"name":"second"}
     end
+
+    it "can take hashes in the constructor" do
+      event = Event.new({"foo" => "bar"})
+
+      event["foo"].should eq "bar"
+    end
   end
 end
