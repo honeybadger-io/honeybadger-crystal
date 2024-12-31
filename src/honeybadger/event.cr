@@ -27,7 +27,7 @@ module Honeybadger
       json_unmapped[key] = coerce(value)
     end
 
-    delegate :[], :[]?, to: json_unmapped
+    delegate :[], :[]?, delete, to: json_unmapped
 
     def merge(other : self) : self
       event = self.class.new(timestamp: timestamp)

@@ -75,6 +75,14 @@ module Honeybadger
       serialized.should contain %{"property":"ExampleEventProperty(@id=123)"}
     end
 
+    it "can delete properties from the event" do
+      event = Event.new(one: 1, two: "two")
+      event["one"]?.should eq 1
+
+      event.delete "one"
+      event["one"]?.should eq nil
+    end
+
     it "merges two events together" do
       first = Event.new(id: 123, name: "first")
       second = Event.new(name: "second")
