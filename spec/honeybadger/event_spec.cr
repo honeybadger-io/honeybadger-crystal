@@ -65,7 +65,7 @@ module Honeybadger
       event.to_json.should contain %{"url":"https://example.com"}
     end
 
-    it "converts arbitrary objects into their text representation" do
+    it "converts arbitrary objects into their json representation" do
       event = Event.new(
         property: ExampleEventProperty.new(id: 123),
       )
