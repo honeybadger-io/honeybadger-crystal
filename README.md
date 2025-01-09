@@ -99,6 +99,29 @@ For an example of identifying users in HTTP handlers, see [demo/http_context.cr]
 
 [Learn more about context data in Honeybadger](https://docs.honeybadger.io/guides/errors/#context-data)
 
+### Sending Events to Honeybadger Insights
+
+You can send custom events to [Honeybadger Insights](https://docs.honeybadger.io/guides/insights/) to track important business metrics and user actions in your application:
+
+```crystal
+# Send a simple event
+Honeybadger.event(name: "user.signup")
+
+# Send an event with properties
+Honeybadger.event(
+  name: "order.completed",
+  total: 99.99,
+  items: ["book", "shirt"],
+  user_id: 123
+)
+```
+
+Events are buffered and sent in batches to optimize performance. The buffer is flushed when either:
+- 60 seconds have elapsed
+- The buffer size exceeds 5MB
+
+Events are sent asynchronously by default, so they won't block your application's execution.
+
 ## Configuration
 
 To set configuration options, use the `Honeybadger.configure` method:
