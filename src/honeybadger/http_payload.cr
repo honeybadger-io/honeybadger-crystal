@@ -15,7 +15,7 @@ module Honeybadger
     getter http_request : HTTP::Request
 
     def initialize(@exception : Exception, @http_request : HTTP::Request)
-      super(@exception)
+      super(exception)
     end
 
     # Renders the "request" stanza of the json payload.
